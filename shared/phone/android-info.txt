@@ -1,3 +1,4 @@
 config=phone
 gfxstream=supported
 gfxstream_gl_program_binary_link_status=supported
+gpu_mode_candidates=gfxstream,gfxstream_guest_angle,gfxstream_guest_angle_host_swiftshader
