@@ -167,6 +167,16 @@ GetGpuModeRequirementsMap() {
           "Consider enabling --gpu_mode=gfxstream_guest_angle_host_swiftshader "
           "for host software rendering which has a vetted software renderer.",
   };
+  const RequirementWithReason kHostSwiftshaderAvailable{
+      .func = [](const CommonState&) {
+        // This mode selects the bundled ICD explicitly. The system's
+        // default Vulkan driver does not need to provide a physical device.
+        return FileExists(HostUsrSharePath("vulkan/icd.d/vk_swiftshader_icd.json")) &&
+               FileExists(DefaultHostArtifactsPath("lib64/vulkan.pastel.so"));
+      },
+      .success_explanation = "The host package includes SwiftShader.",
+      .failure_explanation = "The host package is missing SwiftShader.",
+  };
   static const auto* kGpuModeRequirements =
       new std::unordered_map<GpuMode, std::vector<RequirementWithReason>>{
           {
@@ -205,7 +215,7 @@ GetGpuModeRequirementsMap() {
               {
                   kGuestSupportsGfxstream,
                   kHostIsNonArm,
-                  kHostVulkanAvailable,
+                  kHostSwiftshaderAvailable,
                   kNotUsingHostQemu,
               },
           },
